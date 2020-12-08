@@ -8,6 +8,12 @@ let app = express()
 app.use(bodyParser.urlencoded({ extended : true }))
 app.use(bodyParser.json())
 
+let db = new mongodb.Db(
+    'instagram',
+    new mongodb.Server('localhost', 27017, {}),
+    {}
+)
+
 let port = 8080
 
 app.listen(port)
@@ -18,5 +24,21 @@ app.get('/', function(req, res){
     let answer = { msg: "Olá"}
     res.send(answer)
     // res.send({msg: 'Olá'}) 
+})
 
+app.post('/api', function(req, res){
+    let dados = req.body
+    
+    db.open( function(err, mongoclient){
+        mongoclient.collection('postagens', function(err, collection){
+            collection.insert(dados, function(err, records){
+                if(err){
+                    res.json({'status' : 'Erro'})
+                } else {
+                    res.json({ 'status' : 'Inclusão realizada com sucesso'})
+                }
+                mongoclient.close()
+            })
+        })
+    })
 })
