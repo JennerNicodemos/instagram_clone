@@ -12,4 +12,11 @@ let port = 8080
 
 app.listen(port)
 
-console.log('Servidor HTTP está escutando na porta ' + port )
+console.log('Servidor HTTP está escutando na porta ' + port)
+
+app.get('/', function(req, res){
+    let answer = { msg: "Olá"}
+    res.send(answer)
+    // res.send({msg: 'Olá'}) 
+
+})
