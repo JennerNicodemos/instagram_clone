@@ -1,5 +1,6 @@
 let express = require('express')
 let bodyParser = require('body-parser')
+let multiparty = require('connect-multiparty')
 let mongodb = require('mongodb')
 let objectId = require('mongodb').ObjectId
 
@@ -8,6 +9,7 @@ let app = express()
 // body-parser
 app.use(bodyParser.urlencoded({ extended : true }))
 app.use(bodyParser.json())
+app.use(multiparty())
 
 let db = new mongodb.Db(
     'instagram',
