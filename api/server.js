@@ -3,6 +3,8 @@ let bodyParser = require('body-parser')
 let multiparty = require('connect-multiparty')
 let mongodb = require('mongodb')
 let objectId = require('mongodb').ObjectId
+let fs = require('fs')
+const { timeStamp } = require('console')
 
 let app = express()
 
@@ -24,8 +26,8 @@ app.listen(port)
 console.log('Servidor HTTP está escutando na porta ' + port)
 
 app.get('/', function(req, res){
-    let answer = { msg: "Olá"}
-    res.send(answer)
+    let dados = { msg: "Olá"}
+    res.send(dados)
     // res.send({msg: 'Olá'}) 
 })
 
@@ -33,21 +35,62 @@ app.get('/', function(req, res){
 app.post('/api', function(req, res){
 
     res.setHeader("Access-Control-Allow-Origin", "*")
-    let dados = req.body
-    res.send(dados)
+
+    let date = new Date()
+    time_stamp = date.getTime()
+    let url_imagen = time_stamp + '_' + req.files.arquivo.originalFilename
+
+    console.log(req.files)
+
+    let path_origem = req.files.arquivo.path
+    let path_destino = './uploads/' + url_imagen
+
     
-    // db.open( function(err, mongoclient){
-    //     mongoclient.collection('postagens', function(err, collection){
-    //         collection.insert(dados, function(err, records){
-    //             if(err){
-    //                 res.json({'status' : 'Erro'})
-    //             } else {
-    //                 res.json({ 'status' : 'Inclusão realizada com sucesso'})
-    //             }
-    //             mongoclient.close()
-    //         })
-    //     })
-    // })
+
+    /* fs.rename(path_origem, path_destino, function(err){
+        if (err) {
+            res.status(500)
+            // res.json({ erro: err })
+            return
+        }
+    }) */
+
+    // Lê o arquivo original
+    fs.readFile(path_origem, function(err, data) {
+    
+        // Grava o novo arquivo
+        fs.writeFile(path_destino, data, function(err) {
+            
+            let dados = {
+                url_imagen: url_imagen,
+                titulo: req.body.titulo
+            }
+            
+            if (!err) {
+
+                // Inserção dos dados no banco
+                db.open( function(err, mongoclient){
+                    mongoclient.collection('postagens', function(err, collection){
+                        collection.insert(dados, function(err, records){
+                            if(err){
+                                res.json({'status' : 'Erro'})
+                            } else {
+                                res.json({ 'status' : 'Inclusão realizada com sucesso'})
+                            }
+                            mongoclient.close()
+                        })
+                    })
+                })
+            }
+        });
+        // Remove o arquivo original
+        fs.unlink(path_origem, (err) => {  
+            if (err) {
+              return console.log(err)
+            }
+            console.log('arquivo deletado com sucesso!')
+          })
+    });
 })
 
 // GET (ready)
