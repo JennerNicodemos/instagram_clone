@@ -38,12 +38,12 @@ app.post('/api', function(req, res){
 
     let date = new Date()
     time_stamp = date.getTime()
-    let url_imagen = time_stamp + '_' + req.files.arquivo.originalFilename
+    let url_imagem = time_stamp + '_' + req.files.arquivo.originalFilename
 
     console.log(req.files)
 
     let path_origem = req.files.arquivo.path
-    let path_destino = './uploads/' + url_imagen
+    let path_destino = './uploads/' + url_imagem
 
     
 
@@ -62,7 +62,7 @@ app.post('/api', function(req, res){
         fs.writeFile(path_destino, data, function(err) {
             
             let dados = {
-                url_imagen: url_imagen,
+                url_imagem: url_imagem,
                 titulo: req.body.titulo
             }
             
@@ -112,6 +112,7 @@ app.get('/api', function(req, res){
     })
 })
 
+
 // GET by ID (ready)
 app.get('/api/:id', function(req, res){
     db.open( function(err, mongoclient){
@@ -125,6 +126,20 @@ app.get('/api/:id', function(req, res){
                 mongoclient.close()
             })
         })
+    })
+})
+
+app.get('/imagens/:imagem', function(req, res){
+    
+    let img = req.params.imagem
+    
+    fs.readFile('./uploads/' + img, function(err, content){
+        if (err) {
+            res.status(400).json(err)
+            return
+        }
+        res.writeHead(200, { 'content-type' : 'image/jpg', 'content-type' : 'image/png' })
+        res.end(content)
     })
 })
 
