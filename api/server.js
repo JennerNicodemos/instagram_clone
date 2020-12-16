@@ -184,7 +184,10 @@ app.get('/imagens/:imagem', function(req, res){
 
 // PUT by ID (update)
 app.put('/api/:id', function(req, res){
-    db.open( function(err, mongoclient){
+    
+    res.send('rota para atualização')
+    
+    /*db.open( function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.update(
                 { _id : objectId(req.params.id) },
@@ -200,7 +203,7 @@ app.put('/api/:id', function(req, res){
                 }
             )
         })
-    })
+    }) */
 })
 
 // DELETE by ID (remover)

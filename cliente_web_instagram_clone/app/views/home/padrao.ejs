@@ -45,7 +45,10 @@
 								let id = this.value
 								let id_input_comentario = 'postagem_' + id
 								let comentario = $('#'+id_input_comentario).val()
-								alert(comentario)
+								
+								let xhr = XMLHttpRequest()
+								xhr.open('PUT', 'http://localhost:8080/api/'+id)
+								xhr.send()
 							})
 						}
 					}
