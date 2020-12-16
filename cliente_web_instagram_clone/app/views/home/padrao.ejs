@@ -46,9 +46,14 @@
 								let id_input_comentario = 'postagem_' + id
 								let comentario = $('#'+id_input_comentario).val()
 								
-								let xhr = XMLHttpRequest()
+								let xhr = new XMLHttpRequest()
 								xhr.open('PUT', 'http://localhost:8080/api/'+id)
-								xhr.send()
+								xhr.setRequestHeader('Content-Type', 'application/json')
+
+								xhr.onload = function(){
+									alert(xhr.responseText)
+								}
+								xhr.send(JSON.stringify({ comentario : comentario }))
 							})
 						}
 					}

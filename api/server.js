@@ -13,6 +13,16 @@ app.use(bodyParser.urlencoded({ extended : true }))
 app.use(bodyParser.json())
 app.use(multiparty())
 
+app.use(function(req, res, next){
+
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE")
+    res.setHeader("Access-Control-Allow-Headers", "content-type")
+    res.setHeader("Access-Control-Allow-Credentials", true)
+
+    next()
+})
+
 let db = new mongodb.Db(
     'instagram',
     new mongodb.Server('localhost', 27017, {}),
@@ -72,8 +82,6 @@ app.get('/', function(req, res){
 
 // POST (create)
 app.post('/api', function(req, res){
-
-    res.setHeader("Access-Control-Allow-Origin", "*")
 
     let date = new Date()
     let time_stamp = date.getTime()
@@ -135,8 +143,6 @@ app.post('/api', function(req, res){
 // GET (ready)
 app.get('/api', function(req, res){
 
-    res.setHeader("Access-Control-Allow-Origin", "*")
-
     db.open( function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.find().toArray(function(err, results){
@@ -185,8 +191,8 @@ app.get('/imagens/:imagem', function(req, res){
 // PUT by ID (update)
 app.put('/api/:id', function(req, res){
     
-    res.send('rota para atualização')
-    
+    res.send(req.body.comentario)
+
     /*db.open( function(err, mongoclient){
         mongoclient.collection('postagens', function(err, collection){
             collection.update(
